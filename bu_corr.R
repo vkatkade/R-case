@@ -1,3 +1,12 @@
+# This is a script which takes in Sales Orders of products of various Business Units, groups these by Sales Order #, 
+# and finds a correlation between then various products ordered as part of same Sales Order.
+
+<<<<<<< HEAD
+
+eng_corr <- function() {
+
+=======
+>>>>>>> eadc19851ffa8b64b24849279ba43e8e90b0786f
 library(reshape2)
 library(Matrix)
 
@@ -12,16 +21,17 @@ data = data[(data$ERP.Sales.Order.Number != -9999) & (data$Cisco.Bookings.Net > 
 
 
 # How much data have we filtered out in terms of number of rows and $$ amount
-nrow(data);
-nrow(invaliddata);
-sum(data$Cisco.Bookings.Net);
-sum(invaliddata$Cisco.Bookings.Net);
+cat("\nTotal Rows: ", nrow(data), "\t", "Total Bookings:", sum(data$Cisco.Bookings.Net));
+cat("\nExcluded Rows: ", nrow(invaliddata), "\t", "Excluded Bookings:", sum(invaliddata $Cisco.Bookings.Net));
+cat("\n\n");
 
 # How many unique customers
-length(unique(data$Sold.To.Global.Ultimate.Name));
+cat("\nNumber of unique customers = ", length(unique(data$Sold.To.Global.Ultimate.Name)));
 
 # How many unique orders
-length(unique(data$ERP.Sales.Order.Number));
+cat("\nNumber of unique orders = ", length(unique(data$ERP.Sales.Order.Number)));
+cat("\n\n");
+
 
 data_uag = data[data$Business.Unit == "UABU",];
 data_wng = data[data$Business.Unit == "WNBU",];
@@ -46,16 +56,18 @@ sum(data_common_wng$Cisco.Bookings.Net);
 val_common_uag = 100*sum(data_common_uag$Cisco.Bookings.Net) / sum(data_uag$Cisco.Bookings.Net);
 val_common_wng = 100*sum(data_common_wng$Cisco.Bookings.Net) / sum(data_wng$Cisco.Bookings.Net);
 
-sprintf("          Total Bookings     Common SO Bookings     Percent Common");
-sprintf("%s      %.0f      %.0f     %.2f",  "UAG", sum(data_uag$Cisco.Bookings.Net), sum(data_common_uag$Cisco.Bookings.Net), val_common_uag);
-sprintf("%s      %.0f      %.0f     %.2f",  "WNG", sum(data_wng$Cisco.Bookings.Net), sum(data_common_wng$Cisco.Bookings.Net), val_common_wng);
+cat("\t","Total Bookings","\t","Common SO Bookings","\t","%Common","\n")
+cat("UAG","\t",sum(data_uag$Cisco.Bookings.Net),"\t",sum(data_common_uag$Cisco.Bookings.Net),"\t",val_common_uag,"\n");
+cat("WNG","\t",sum(data_wng$Cisco.Bookings.Net),"\t",sum(data_common_wng$Cisco.Bookings.Net),"\t",val_common_wng,"\n");
+cat("\n\n");
 
-sprintf("        Total SO         Common SO         Common SO Percent");
-sprintf("%s       %.0f            %.0f         %.2f", "UAG", length(data_uag_so), length(data_common_so), 100*length(data_common_so)/length(data_uag_so));
-sprintf("%s       %.0f            %.0f         %.2f", "WNG", length(data_wng_so), length(data_common_so), 100*length(data_common_so)/length(data_wng_so));
+
+cat("\tTotal SO \t Common SO \t Common SO %");
+cat("\nUAG", "\t", length(data_uag_so), "\t", length(data_common_so), "\t", 100*length(data_common_so)/length(data_uag_so));
+cat("\nWNG",  "\t", length(data_wng_so), "\t", length(data_common_so), "\t", 100*length(data_common_so)/length(data_wng_so));
+cat("\n\n");
 
 data_common_uag_wng = rbind(data_common_uag, data_common_wng);
-
 data_common_uag_wng_sorted = data_common_uag_wng[order(data_common_uag_wng$ERP.Sales.Order.Number),]
 
 data2 = dcast(data_common_uag_wng_sorted, ERP.Sales.Order.Number ~ Product.Family, value.var="Cisco.Bookings.Net", sum)
@@ -66,4 +78,5 @@ aggdata <- aggdata[,3:(num_cols)]   # Exclude the index number and ERP SO Number
 outdata = cor(aggdata, aggdata);
 outdata[lower.tri(outdata,diag=TRUE)] <- 0;
 write.csv(outdata, "output.csv", sep = ",");
+}
 
