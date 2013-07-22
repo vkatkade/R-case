@@ -1,3 +1,6 @@
+# This is a script which takes in Sales Orders of products of various Business Units, groups these by Sales Order #, 
+# and finds a correlation between then various products ordered as part of same Sales Order.
+
 library(reshape2)
 library(Matrix)
 
